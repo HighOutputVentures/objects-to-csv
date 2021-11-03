@@ -11,7 +11,7 @@ class ObjectsToCsv {
    * Creates a new instance of the object array to csv converter.
    * @param {object[]} objectArray
    */
-  constructor(objectArray) {
+  constructor(objectArray, csvOpts) {
     if (!Array.isArray(objectArray)) {
       throw new Error('The input to objects-to-csv must be an array of objects.');
     }
@@ -23,6 +23,7 @@ class ObjectsToCsv {
     }
 
     this.data = objectArray;
+    this.csvOpts = csvOpts;
   }
 
   /**
@@ -93,7 +94,7 @@ class ObjectsToCsv {
    * @returns {Promise<string>}
    */
   async toString(header = true, allColumns = false) {
-    return await convert(this.data, header, allColumns);
+    return convert(this.data, header, allColumns, this.csvOpts);
   }
 }
 
@@ -105,7 +106,7 @@ class ObjectsToCsv {
  *   Uses only the first item if false.
  * @returns {string}
  */
-async function convert(data, header = true, allColumns = false) {
+async function convert(data, header = true, allColumns = false, opts) {
   if (data.length === 0) {
     return '';
   }
@@ -135,7 +136,7 @@ async function convert(data, header = true, allColumns = false) {
     ...data.map(row => columnNames.map(column => row[column])),
   );
 
-  return await csv.stringify(csvInput);
+  return await csv.stringify(csvInput, opts);
 }
 
 module.exports = ObjectsToCsv;

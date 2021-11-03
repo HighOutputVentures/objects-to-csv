@@ -41,6 +41,15 @@ describe('Object to CSV converter', () => {
     expect(result).toEqual('code,name\nHK,Hong Kong\nKLN,Kowloon\nNT,New Territories\n');
   });
 
+  it('must generate a CSV file - normal ASCII text with tab delimiter', async () => {
+    const csv = new ObjectsToCsv(SAMPLE_ASCII, { delimiter: '\t' });
+    const testFilename = `deleteme-test-${Date.now()}-1.csv`;
+    await csv.toDisk(testFilename);
+    const result = fs.readFileSync(testFilename, 'utf8');
+    fs.unlinkSync(testFilename);
+    expect(result).toEqual('code\tname\nHK\tHong Kong\nKLN\tKowloon\nNT\tNew Territories\n');
+  });
+
   it('must generate a CSV file - special alphabets', async () => {
     const csv = new ObjectsToCsv(SAMPLE_UNICODE);
     const testFilename = `deleteme-test-${Date.now()}-2.csv`;
